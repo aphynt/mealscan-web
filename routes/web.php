@@ -30,6 +30,9 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::post('/employees/{employee}/register-face', [AdminController::class, 'registerFace'])->name('employees.register-face');
     Route::delete('/employees/{employee}/delete-face', [AdminController::class, 'deleteFace'])->name('employees.delete-face');
     
+    // Employee Detail
+    Route::get('/employees/{employee}/show', [AdminController::class, 'showEmployee'])->name('employees.show');
+    
     // Meal Time Settings
     Route::get('/meal-times', [AdminController::class, 'mealTimeSettings'])->name('meal-times');
     Route::put('/meal-times/{mealType}', [AdminController::class, 'updateMealTime'])->name('meal-times.update');

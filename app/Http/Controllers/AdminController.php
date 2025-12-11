@@ -90,6 +90,12 @@ class AdminController extends Controller
         $result = $this->faceService->registerFace($employee->nik, $tempPath);
 
         if ($result['success']) {
+            // Save photo to Laravel storage
+            $photoPath = $photo->store('faces', 'public');
+            
+            // Update employee with photo path
+            $employee->update(['photo_path' => $photoPath]);
+
             // Save face embedding data to database
             $employee->faceEmbedding()->updateOrCreate(
                 ['nik' => $employee->nik],
@@ -106,6 +112,11 @@ class AdminController extends Controller
         return back()->withErrors(['photo' => $result['error'] ?? 'Failed to register face']);
     }
 
+    public function showEmployee(Employee $employee)
+    {
+        return view('admin.employees.show', compact('employee'));
+    }
+
     public function deleteFace(Employee $employee)
     {
         if (!$employee->hasFaceRegistered()) {
@@ -116,6 +127,14 @@ class AdminController extends Controller
         $result = $this->faceService->deleteFace($employee->nik);
 
         if ($result['success']) {
+            // Delete photo from storage
+            if ($employee->photo_path && \Storage::disk('public')->exists($employee->photo_path)) {
+                \Storage::disk('public')->delete($employee->photo_path);
+            }
+            
+            // Update employee to remove photo path
+            $employee->update(['photo_path' => null]);
+            
             // Delete from database
             $employee->faceEmbedding()->delete();
             return redirect()->route('admin.employees')->with('success', 'Face data deleted successfully!');
@@ -233,6 +252,9 @@ class AdminController extends Controller
                     $request->end_date
                 ]);
             }
+        } else {
+            // Default: today
+            $query->whereDate('attendance_date', today());
         }
 
         if ($request->filled('meal_type')) {

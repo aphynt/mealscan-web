@@ -11,12 +11,21 @@ class Employee extends Model
     protected $fillable = [
         'nik',
         'name',
+        'photo_path',
         'is_active',
     ];
 
     protected $casts = [
         'is_active' => 'boolean',
     ];
+
+    public function getPhotoUrlAttribute()
+    {
+        if ($this->photo_path && \Storage::disk('public')->exists($this->photo_path)) {
+            return \Storage::disk('public')->url($this->photo_path);
+        }
+        return null;
+    }
 
     public function faceEmbedding(): HasOne
     {
