@@ -35,6 +35,7 @@ class AttendanceController extends Controller
             'image'         => 'required|string',
             'quantity'      => 'integer|min:1|max:10',
             'remarks'       => 'nullable|string',
+            'rating'       => 'nullable|integer',
             'recognize_only'=> 'boolean',
         ]);
 
@@ -126,7 +127,8 @@ class AttendanceController extends Controller
                 'meal_type'        => $currentMealType,
                 'status'           => 'present',
                 'quantity'         => $request->quantity ?? 1,
-                'remarks'          => $request->remarks ?? null, // ⬅️ Tambahan baru
+                'rating'          => $request->rating ?? null,
+                'remarks'          => $request->remarks ?? null,
                 'attendance_date'  => today(),
                 'attendance_time'  => now(),
                 'similarity_score' => $result['similarity'] ?? null,
@@ -135,7 +137,7 @@ class AttendanceController extends Controller
 
             return response()->json([
                 'success'       => true,
-                'message'       => "Selamat datang! Absensi {$currentMealType} berhasil.",
+                'message'       => "Absensi {$currentMealType} berhasil. Terimakasih!",
                 'nik'           => $nik,
                 'employee_name' => $employeeName,
                 'meal_type'     => $currentMealType,

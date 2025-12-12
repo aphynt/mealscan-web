@@ -35,7 +35,7 @@
             </div>
 
             <div class="flex items-center">
-                <input type="checkbox" name="is_active" id="is_active" value="1" 
+                <input type="checkbox" name="is_active" id="is_active" value="1"
                        {{ old('is_active', $employee->is_active) ? 'checked' : '' }}
                        class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded">
                 <label for="is_active" class="ml-2 block text-sm text-gray-700">

@@ -14,7 +14,8 @@ return new class extends Migration
             $table->enum('meal_type', ['breakfast', 'lunch', 'dinner']);
             $table->enum('status', ['present', 'absent', 'late'])->default('present');
             $table->integer('quantity')->default(1)->comment('Jumlah makanan yang diambil');
-            $table->text('remarks')->nullable()->comment('Saran dari karyawan'); 
+            $table->integer('rating')->nullable();
+            $table->text('remarks')->nullable()->comment('Saran dari karyawan');
 
             $table->date('attendance_date');
             $table->timestamp('attendance_time')->useCurrent();

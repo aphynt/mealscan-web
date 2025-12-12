@@ -12,6 +12,7 @@ class AttendanceLog extends Model
         'meal_type',
         'status',
         'quantity',
+        'rating',
         'remarks',
         'attendance_date',
         'attendance_time',

@@ -7,6 +7,7 @@ use App\Models\MealTimeSetting;
 use App\Models\AttendanceLog;
 use App\Services\FaceRecognitionService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class AdminController extends Controller
 {
@@ -21,7 +22,7 @@ class AdminController extends Controller
         $totalEmployees = Employee::where('is_active', true)->count();
         $registeredFaces = Employee::whereHas('faceEmbedding')->count();
         $todayAttendance = AttendanceLog::whereDate('attendance_date', today())->count();
-        
+
         return view('admin.dashboard', compact('totalEmployees', 'registeredFaces', 'todayAttendance'));
     }
 
@@ -72,7 +73,7 @@ class AdminController extends Controller
         if ($employee->hasFaceRegistered()) {
             $this->faceService->deleteFace($employee->nik);
         }
-        
+
         $employee->delete();
         return redirect()->route('admin.employees')->with('success', 'Employee deleted successfully!');
     }
@@ -92,7 +93,7 @@ class AdminController extends Controller
         if ($result['success']) {
             // Save photo to Laravel storage
             $photoPath = $photo->store('faces', 'public');
-            
+
             // Update employee with photo path
             $employee->update(['photo_path' => $photoPath]);
 
@@ -119,28 +120,47 @@ class AdminController extends Controller
 
     public function deleteFace(Employee $employee)
     {
-        if (!$employee->hasFaceRegistered()) {
-            return back()->withErrors(['error' => 'No face data found for this employee']);
-        }
 
-        // Delete from Python API
-        $result = $this->faceService->deleteFace($employee->nik);
 
-        if ($result['success']) {
-            // Delete photo from storage
-            if ($employee->photo_path && \Storage::disk('public')->exists($employee->photo_path)) {
-                \Storage::disk('public')->delete($employee->photo_path);
+        // if (!$employee->hasFaceRegistered()) {
+        //     return back()->withErrors(['error' => 'No face data found for this employee']);
+        // }
+
+        // // Delete from Python API
+        // $result = $this->faceService->deleteFace($employee->nik);
+
+        // if ($result['success']) {
+        //     // Delete photo from storage
+        //     if ($employee->photo_path && Storage::disk('public')->exists($employee->photo_path)) {
+        //         Storage::disk('public')->delete($employee->photo_path);
+        //     }
+
+        //     // Update employee to remove photo path
+        //     $employee->update(['photo_path' => null]);
+
+        //     // Delete from database
+        //     $employee->faceEmbedding()->delete();
+        //     return redirect()->route('admin.employees')->with('success', 'Face data deleted successfully!');
+        // }
+
+        // return back()->withErrors(['error' => $result['error'] ?? 'Failed to delete face data']);
+
+
+        try {
+            if ($employee->photo_path && Storage::disk('public')->exists($employee->photo_path)) {
+                Storage::disk('public')->delete($employee->photo_path);
             }
-            
+
             // Update employee to remove photo path
             $employee->update(['photo_path' => null]);
-            
+
             // Delete from database
             $employee->faceEmbedding()->delete();
-            return redirect()->route('admin.employees')->with('success', 'Face data deleted successfully!');
-        }
 
-        return back()->withErrors(['error' => $result['error'] ?? 'Failed to delete face data']);
+            return redirect()->route('admin.employees')->with('success', 'Face data deleted successfully!');
+        } catch (\Throwable $th) {
+            return back()->withErrors(['error' => $result['error'] ?? 'Failed to delete face data']);
+        }
     }
 
     public function mealTimeSettings()
@@ -170,7 +190,7 @@ class AdminController extends Controller
         // Filter by date range
         if ($request->filled('filter_type')) {
             $filterType = $request->filter_type;
-            
+
             if ($filterType === 'today') {
                 $query->whereDate('attendance_date', today());
             } elseif ($filterType === 'week') {
@@ -235,7 +255,7 @@ class AdminController extends Controller
         // Apply same filters as report
         if ($request->filled('filter_type')) {
             $filterType = $request->filter_type;
-            
+
             if ($filterType === 'today') {
                 $query->whereDate('attendance_date', today());
             } elseif ($filterType === 'week') {
@@ -271,7 +291,7 @@ class AdminController extends Controller
 
         // Generate Excel file
         $filename = 'Laporan_Absensi_' . now()->format('Y-m-d_His') . '.xlsx';
-        
+
         return \Maatwebsite\Excel\Facades\Excel::download(
             new \App\Exports\AttendanceExport($attendances),
             $filename
@@ -281,7 +301,7 @@ class AdminController extends Controller
     private function applyDateFilter($query, $request)
     {
         $filterType = $request->filter_type;
-        
+
         if ($filterType === 'today') {
             $query->whereDate('attendance_date', today());
         } elseif ($filterType === 'week') {
