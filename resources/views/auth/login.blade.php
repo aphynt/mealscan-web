@@ -5,13 +5,11 @@
 @section('content')
 <div class="min-h-screen flex items-center justify-center bg-[#001932] px-4">
     <div class="max-w-md w-full space-y-8">
-        <div>
+        <div class="flex justify-center mb-8">
             <!-- Logo -->
-            <div class="mb-8">
-                <img src="{{ asset('logo.png') }}" 
-                    alt="SIMS Logo" 
-                    class="w-100 h-auto object-contain">
-            </div>
+            <img src="{{ asset('logo.png') }}"
+                alt="SIMS Logo"
+                class="w-100 h-auto object-contain">
         </div>
         <div class="bg-white rounded-2xl shadow-2xl p-8">
             <form method="POST" action="{{ route('login') }}" class="space-y-6">
