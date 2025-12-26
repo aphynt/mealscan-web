@@ -26,9 +26,22 @@ class AdminController extends Controller
         return view('admin.dashboard', compact('totalEmployees', 'registeredFaces', 'todayAttendance'));
     }
 
-    public function employees()
+    public function employees(Request $request)
     {
-        $employees = Employee::with('faceEmbedding')->latest()->paginate(15);
+        $search = $request->search;
+
+        $employees = Employee::with('faceEmbedding')
+            // ->whereNull('photo_path')
+            ->when($search, function ($query, $search) {
+                $query->where(function ($q) use ($search) {
+                    $q->where('nik', 'like', "%{$search}%")
+                    ->orWhere('name', 'like', "%{$search}%");
+                });
+            })
+            ->latest()
+            ->paginate(15)
+            ->withQueryString();
+
         return view('admin.employees.index', compact('employees'));
     }
 
@@ -251,6 +264,7 @@ class AdminController extends Controller
     public function exportAttendance(Request $request)
     {
         $query = AttendanceLog::with('employee');
+
 
         // Apply same filters as report
         if ($request->filled('filter_type')) {

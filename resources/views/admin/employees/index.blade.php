@@ -4,12 +4,21 @@
 
 @section('content')
 <div class="space-y-6">
-    <div class="flex justify-between items-center">
-        <h1 class="text-3xl font-bold text-gray-900">Employees</h1>
-        <a href="{{ route('admin.employees.create') }}" class="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 rounded-lg font-medium transition">
-            + Add Employee
-        </a>
-    </div>
+    <div class="flex flex-col md:flex-row md:justify-between md:items-center gap-4">
+    <h1 class="text-3xl font-bold text-gray-900">Employees</h1>
+
+    <form method="GET" action="" class="flex w-full md:w-auto">
+        <input
+            type="text"
+            name="search"
+            value="{{ request('search') }}"
+            placeholder="Search NIK or Name..."
+            class="w-full md:w-72 px-4 py-2 border border-gray-300 rounded-l-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm">
+        <button type="submit" class="px-4 py-2 bg-indigo-600 text-white rounded-r-lg hover:bg-indigo-700 text-sm font-medium">
+            Search
+        </button>
+    </form>
+</div>
 
     <div class="bg-white shadow-lg rounded-xl overflow-hidden">
         <div class="overflow-x-auto">
@@ -49,9 +58,9 @@
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
                                     </svg>
                                 </a>
-                                
+
                                 <a href="{{ route('admin.employees.edit', $employee) }}" class="text-indigo-600 hover:text-indigo-900">Edit</a>
-                                
+
                                 @if($employee->hasFaceRegistered())
                                     <form action="{{ route('admin.employees.delete-face', $employee) }}" method="POST" class="inline" onsubmit="return confirm('Delete face data?')">
                                         @csrf
@@ -63,7 +72,7 @@
                                         Register Face
                                     </button>
                                 @endif
-                                
+
                                 <form action="{{ route('admin.employees.delete', $employee) }}" method="POST" class="inline" onsubmit="return confirm('Are you sure?')">
                                     @csrf
                                     @method('DELETE')
@@ -97,7 +106,7 @@
             <h3 class="text-2xl font-bold text-gray-900 mb-4">Register Face</h3>
             <p class="text-gray-600 mb-2">NIK: <span id="modalEmployeeId" class="font-semibold"></span></p>
             <p class="text-gray-600 mb-6">Name: <span id="modalEmployeeName" class="font-semibold"></span></p>
-            
+
             <form id="faceRegisterForm" method="POST" enctype="multipart/form-data" class="space-y-4">
                 @csrf
                 <div>
@@ -106,7 +115,7 @@
                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
                     <p class="text-xs text-gray-500 mt-1">Upload a clear photo of the employee's face (JPG, PNG)</p>
                 </div>
-                
+
                 <div class="flex space-x-3">
                     <button type="button" onclick="closeFaceRegisterModal()"
                             class="flex-1 px-4 py-3 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 font-medium transition">

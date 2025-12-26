@@ -16,6 +16,7 @@ return new class extends Migration
             $table->integer('quantity')->default(1)->comment('Jumlah makanan yang diambil');
             $table->integer('rating')->nullable();
             $table->text('remarks')->nullable()->comment('Saran dari karyawan');
+            $table->string('created_by')->nullable();
 
             $table->date('attendance_date');
             $table->timestamp('attendance_time')->useCurrent();

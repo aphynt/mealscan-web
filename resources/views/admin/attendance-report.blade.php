@@ -6,7 +6,9 @@
 <div class="container mx-auto px-6 py-8">
     <div class="flex justify-between items-center mb-6">
         <h2 class="text-3xl font-bold text-gray-800">Rekapitulasi Absensi</h2>
+        <button type="button" class="bg-purple-600 hover:bg-purple-700 text-white px-6 py-2 rounded-md font-medium ml-auto">Input Manual</button>
     </div>
+
 
     <!-- Statistics Cards -->
     <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
@@ -220,7 +222,8 @@
     // Export data
     function exportData() {
         const form = document.querySelector('form');
-        const params = new URLSearchParams(new FormData(form));
+        // const params = new URLSearchParams(new FormData(form));
+        const params = new URLSearchParams(window.location.search);
         window.location.href = '{{ route("admin.attendance-report.export") }}?' + params.toString();
     }
 </script>

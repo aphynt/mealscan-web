@@ -40,6 +40,7 @@ class AttendanceExport implements FromCollection, WithHeadings, WithMapping, Wit
             'Nama',
             'Kategori Makan',
             'Jumlah',
+            'Rating',
             'Saran'
         ];
     }
@@ -60,6 +61,7 @@ class AttendanceExport implements FromCollection, WithHeadings, WithMapping, Wit
             $attendance->employee->name ?? '-',
             $this->getMealTypeLabel($attendance->meal_type),
             $attendance->quantity,
+            $attendance->rating,
             $attendance->remarks ?? '-'
         ];
     }
@@ -67,9 +69,9 @@ class AttendanceExport implements FromCollection, WithHeadings, WithMapping, Wit
     private function getMealTypeLabel($mealType): string
     {
         $labels = [
-            'breakfast' => 'Makan Pagi',
-            'lunch' => 'Makan Siang',
-            'dinner' => 'Makan Malam'
+            'breakfast' => 'Breakfast',
+            'lunch' => 'Lunch',
+            'dinner' => 'Dinner'
         ];
 
         return $labels[$mealType] ?? ucfirst($mealType);
@@ -88,7 +90,8 @@ class AttendanceExport implements FromCollection, WithHeadings, WithMapping, Wit
             'E' => 25,
             'F' => 15,
             'G' => 10,
-            'H' => 30, // Saran
+            'H' => 10,
+            'I' => 30, // Saran
         ];
     }
 
@@ -98,7 +101,7 @@ class AttendanceExport implements FromCollection, WithHeadings, WithMapping, Wit
     public function styles(Worksheet $sheet)
     {
         // Header style
-        $sheet->getStyle('A1:H1')->applyFromArray([
+        $sheet->getStyle('A1:I1')->applyFromArray([
             'font' => [
                 'bold' => true,
                 'color' => ['rgb' => 'FFFFFF'],
@@ -122,7 +125,7 @@ class AttendanceExport implements FromCollection, WithHeadings, WithMapping, Wit
         $lastRow = $sheet->getHighestRow();
 
         // Global borders
-        $sheet->getStyle('A1:H' . $lastRow)->applyFromArray([
+        $sheet->getStyle('A1:I' . $lastRow)->applyFromArray([
             'borders' => [
                 'allBorders' => [
                     'borderStyle' => Border::BORDER_THIN,
@@ -138,9 +141,10 @@ class AttendanceExport implements FromCollection, WithHeadings, WithMapping, Wit
         $sheet->getStyle('D2:D' . $lastRow)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
         $sheet->getStyle('F2:F' . $lastRow)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
         $sheet->getStyle('G2:G' . $lastRow)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+        $sheet->getStyle('H2:H' . $lastRow)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
 
         // Wrap text for Saran column
-        $sheet->getStyle('H2:H' . $lastRow)->getAlignment()->setWrapText(true);
+        $sheet->getStyle('I2:I' . $lastRow)->getAlignment()->setWrapText(true);
 
         $sheet->getRowDimension(1)->setRowHeight(25);
 

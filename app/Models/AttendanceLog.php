@@ -14,6 +14,7 @@ class AttendanceLog extends Model
         'quantity',
         'rating',
         'remarks',
+        'created_by',
         'attendance_date',
         'attendance_time',
         'similarity_score',
