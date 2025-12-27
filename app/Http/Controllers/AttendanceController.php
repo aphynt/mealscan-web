@@ -39,6 +39,7 @@ class AttendanceController extends Controller
             'recognize_only'=> 'boolean',
         ]);
 
+
         // Flag: mode auto-recognition saja atau benar-benar absen
         $recognizeOnly = $request->input('recognize_only', false);
 
@@ -53,13 +54,16 @@ class AttendanceController extends Controller
 
         // Decode base64 image
         $imageData = $request->image;
+        Log::info('Raw image: ' . substr($imageData,0,100));
         if (preg_match('/^data:image\/(\w+);base64,/', $imageData, $type)) {
             $imageData = substr($imageData, strpos($imageData, ',') + 1);
             $imageData = base64_decode($imageData);
         }
 
         // Simpan file sementara
-        $tempFile = tempnam(sys_get_temp_dir(), 'face_') . '.jpg';
+        // $tempFile = tempnam(sys_get_temp_dir(), 'face_') . '.jpg';
+        // file_put_contents($tempFile, $imageData);
+        $tempFile = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'face_' . uniqid() . '.jpg';
         file_put_contents($tempFile, $imageData);
 
         try {
