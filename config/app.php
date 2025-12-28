@@ -15,6 +15,8 @@ return [
 
     'name' => env('APP_NAME', 'Laravel'),
     'agency' => env('APP_AGENCY', 'Laravel'),
+    'attendance_api' => env('ATTENDANCE_API_URL'),
+    'attendance_api_token' => env('ATTENDANCE_API_TOKEN'),
 
     /*
     |--------------------------------------------------------------------------
