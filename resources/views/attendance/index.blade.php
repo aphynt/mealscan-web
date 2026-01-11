@@ -170,6 +170,13 @@
 <meta name="csrf-token" content="{{ csrf_token() }}">
 
 <script>
+    document.addEventListener('focusin', function (e) {
+    if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') {
+        try {
+            window.location.href = "ms-inputapp:";
+        } catch (err) {}
+    }
+});
 /* =============================
       CLOCK
 ============================= */
