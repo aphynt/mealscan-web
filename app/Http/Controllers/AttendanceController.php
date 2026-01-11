@@ -133,6 +133,7 @@ class AttendanceController extends Controller
                 'created_by'       => 'system',
                 'quantity'         => $request->quantity ?? 1,
                 'rating'           => $request->rating ?? null,
+                'sys_post'           => 0,
                 'remarks'          => $request->remarks ?? null,
                 'attendance_date'  => today(),
                 'attendance_time'  => now(),

@@ -15,6 +15,7 @@ return new class extends Migration
             $table->enum('status', ['present', 'absent', 'late'])->default('present');
             $table->integer('quantity')->default(1)->comment('Jumlah makanan yang diambil');
             $table->integer('rating')->nullable();
+            $table->integer('sys_post')->nullable();
             $table->text('remarks')->nullable()->comment('Saran dari karyawan');
             $table->string('created_by')->nullable();
 

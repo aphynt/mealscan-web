@@ -378,9 +378,15 @@ async function submitAttendance() {
         if (data.success) {
             closeSubmitModal();
             showModal("success", "Berhasil", data.message, true);
+            setTimeout(() => {
+                closeSubmitModal();
+            }, 3000);
         } else {
             closeSubmitModal();
             showModal("error", "Gagal", data.message);
+            setTimeout(() => {
+                closeSubmitModal();
+            }, 3000);
         }
 
     } catch (e) {
@@ -392,6 +398,9 @@ async function submitAttendance() {
         btn.classList.remove("opacity-50", "cursor-not-allowed");
 
         showModal("error", "Gagal", "Terjadi kesalahan. Coba lagi.");
+        setTimeout(() => {
+            closeSubmitModal();
+        }, 3000);
     }
 }
 

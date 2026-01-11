@@ -28,6 +28,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
 
     // Face Registration
     Route::post('/employees/{employee}/register-face', [AdminController::class, 'registerFace'])->name('employees.register-face');
+    Route::post('/employees/registerFaceBulkFromUrl', [AdminController::class, 'registerFaceBulkFromUrl'])->name('employees.registerFaceBulkFromUrl');
     Route::delete('/employees/{employee}/delete-face', [AdminController::class, 'deleteFace'])->name('employees.delete-face');
 
     // Employee Detail

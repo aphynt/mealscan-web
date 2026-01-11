@@ -17,7 +17,9 @@ class PostMealTime extends Command
     {
         $this->info('Mengambil 1000 data attendance_logs terakhir...');
 
-        $logs = AttendanceLog::orderByDesc('id')
+        // Ambil hanya yang belum terkirim
+        $logs = AttendanceLog::where('sys_post', 0)
+            ->orderByDesc('id')
             ->limit(1000)
             ->get();
 
@@ -38,8 +40,6 @@ class PostMealTime extends Command
                 'rating' => (int) $log->rating,
                 'attendance_date' => \Carbon\Carbon::parse($log->attendance_date)->format('Y-m-d'),
                 'attendance_time' => \Carbon\Carbon::parse($log->attendance_time)->format('Y-m-d H:i:s'),
-                // 'similarity_score' => round((float) $log->similarity_score, 2),
-                // 'confidence_score' => round((float) $log->confidence_score, 2),
                 'similarity_score' => (float) $log->similarity_score,
                 'confidence_score' => (float) $log->confidence_score,
                 'created_at' => $log->created_at
@@ -54,9 +54,9 @@ class PostMealTime extends Command
             'timeout' => 15,
         ]);
 
-        $request = new GuzzleRequest(
+        $request = new \GuzzleHttp\Psr7\Request(
             'POST',
-            'http://36.67.119.212:9015/api/attendance/receive',
+            'http://124.158.168.198:9015/api/attendance/receive',
             [
                 'Accept' => 'application/json',
                 'Content-Type' => 'application/json',
@@ -67,10 +67,47 @@ class PostMealTime extends Command
         try {
             $response = $client->send($request, ['http_errors' => false]);
 
-            $this->info('Status Code: ' . $response->getStatusCode());
-            $this->info('Response: ' . $response->getBody());
+            $statusCode = $response->getStatusCode();
+            $responseBody = (string) $response->getBody();
 
-        } catch (RequestException $e) {
+            $this->info('Status Code: ' . $statusCode);
+            $this->info('Response: ' . $responseBody);
+
+            // =========================
+            // CEK APAKAH SUKSES
+            // =========================
+            $isSuccess = false;
+
+            if ($statusCode >= 200 && $statusCode < 300) {
+                $decoded = json_decode($responseBody, true);
+
+                // jika API punya flag success
+                if (is_array($decoded) && isset($decoded['success'])) {
+                    $isSuccess = $decoded['success'] === true;
+                } else {
+                    // fallback: anggap sukses jika HTTP 2xx
+                    $isSuccess = true;
+                }
+            }
+
+            // =========================
+            // UPDATE sys_post = 1
+            // =========================
+            if ($isSuccess) {
+
+                $ids = $logs->pluck('id')->toArray();
+
+                AttendanceLog::whereIn('id', $ids)
+                    ->update(['sys_post' => 1]);
+
+                $this->info('Berhasil update sys_post = 1 untuk ' . count($ids) . ' data.');
+
+            } else {
+                $this->warn('Pengiriman gagal, sys_post tidak diubah.');
+            }
+
+        } catch (\GuzzleHttp\Exception\RequestException $e) {
+
             $this->error('Request failed');
 
             if ($e->hasResponse()) {
@@ -82,4 +119,5 @@ class PostMealTime extends Command
 
         return Command::SUCCESS;
     }
+
 }
