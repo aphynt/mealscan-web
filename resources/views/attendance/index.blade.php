@@ -3,7 +3,7 @@
 @section('title', 'Face Recognition Attendance')
 
 @section('content')
-<div class="min-h-screen bg-[#001932] flex">
+<div class="min-h-screen bg-[#ffffff] flex">
     <!-- Left Side -->
     <div class="w-1/2 flex items-center justify-center p-8">
         <div class="w-full max-w-2xl text-center">
