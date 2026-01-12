@@ -9,14 +9,14 @@
         <div class="w-full max-w-2xl text-center">
 
             <!-- Logo -->
-            <div class="mb-2">
-                <img src="{{ asset('logo.png') }}" class="w-50 h-auto object-contain" alt="Logo">
+            <div class="mb-2 flex justify-center">
+                <img src="{{ asset('logo-dark.png') }}" class="w-100 h-auto object-contain" alt="Logo">
             </div>
 
             <h2 class="text-3xl font-bold text-white mb-4">Absen Face Recognition</h2>
 
             <!-- Camera -->
-            <div class="bg-gray-800 rounded-2xl overflow-hidden shadow-2xl mb-2">
+            <div class="bg-zinc-200 rounded-2xl overflow-hidden shadow-2xl mb-6">
                 <video id="video" autoplay playsinline class="w-full h-auto" style="transform: scaleX(-1);"></video>
                 <canvas id="canvas" class="hidden"></canvas>
             </div>
@@ -24,13 +24,13 @@
             <!-- Auto-fill NIK / Name -->
             <div class="space-y-4 mb-6">
                 <div>
-                    <label class="block text-white text-sm mb-2">NIK</label>
-                    <input id="nik" readonly class="w-full px-2 bg-white rounded-lg" style="font-size: 30pt" />
+                    <label class="block text-black text-sm mb-2">NIK</label>
+                    <input id="nik" readonly class="w-full px-2 bg-zinc-200 rounded-lg" style="font-size: 30pt" />
                 </div>
 
                 <div>
-                    <label class="block text-white text-sm mb-2">Nama</label>
-                    <input id="nama" readonly class="w-full px-4 py-3 bg-white rounded-lg" />
+                    <label class="block text-black text-sm mb-2">Nama</label>
+                    <input id="nama" readonly class="w-full px-4 py-3 bg-zinc-200 rounded-lg" />
                 </div>
             </div>
 
@@ -293,6 +293,9 @@ setInterval(async () => {
 function openSubmitModal() {
     if (!nikInput.value) {
         return showModal("error", "Error", "Wajah belum terdeteksi!");
+        setTimeout(() => {
+                closeSubmitModal();
+            }, 3000);
     }
     document.getElementById("submitModal").classList.remove("hidden");
 }
@@ -386,13 +389,13 @@ async function submitAttendance() {
             closeSubmitModal();
             showModal("success", "Berhasil", data.message, true);
             setTimeout(() => {
-                closeSubmitModal();
+                modal.classList.add("hidden");
             }, 3000);
         } else {
             closeSubmitModal();
             showModal("error", "Gagal", data.message);
             setTimeout(() => {
-                closeSubmitModal();
+                modal.classList.add("hidden");
             }, 3000);
         }
 
@@ -406,7 +409,7 @@ async function submitAttendance() {
 
         showModal("error", "Gagal", "Terjadi kesalahan. Coba lagi.");
         setTimeout(() => {
-            closeSubmitModal();
+            modal.classList.add("hidden");
         }, 3000);
     }
 }
