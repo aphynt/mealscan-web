@@ -293,9 +293,10 @@ setInterval(async () => {
 function openSubmitModal() {
     if (!nikInput.value) {
         return showModal("error", "Error", "Wajah belum terdeteksi!");
-        setTimeout(() => {
-                closeSubmitModal();
-            }, 3000);
+        // setTimeout(() => {
+        //     modal.classList.add("hidden");
+        //     location.reload();
+        // }, 3000);
     }
     document.getElementById("submitModal").classList.remove("hidden");
 }
@@ -390,12 +391,14 @@ async function submitAttendance() {
             showModal("success", "Berhasil", data.message, true);
             setTimeout(() => {
                 modal.classList.add("hidden");
+                location.reload();
             }, 3000);
         } else {
             closeSubmitModal();
             showModal("error", "Gagal", data.message);
             setTimeout(() => {
                 modal.classList.add("hidden");
+                location.reload();
             }, 3000);
         }
 
@@ -410,6 +413,7 @@ async function submitAttendance() {
         showModal("error", "Gagal", "Terjadi kesalahan. Coba lagi.");
         setTimeout(() => {
             modal.classList.add("hidden");
+            location.reload();
         }, 3000);
     }
 }
