@@ -10,8 +10,4 @@ Artisan::command('inspire', function () {
 })->purpose('Display an inspiring quote');
 
 
-Schedule::command('app:post-meal-time')
-    ->everyTwoHours()
-    ->withoutOverlapping()
-    ->runInBackground()
-    ->appendOutputTo(storage_path('logs/post-meal-time.log'));
+Schedule::command('app:post-meal-time');
