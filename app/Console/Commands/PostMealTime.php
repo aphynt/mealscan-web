@@ -52,12 +52,12 @@ class PostMealTime extends Command
         $body = json_encode(['data' => $payload], JSON_UNESCAPED_SLASHES);
 
         $client = new Client([
-            'timeout' => 15,
+            'timeout' => 30,
         ]);
 
         $request = new \GuzzleHttp\Psr7\Request(
             'POST',
-            'http://124.158.168.198:9015/api/attendance/receive',
+            'http://124.158.168.194:93/api/attendance/receive',
             [
                 'Accept' => 'application/json',
                 'Content-Type' => 'application/json',
