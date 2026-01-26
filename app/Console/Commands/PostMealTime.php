@@ -70,6 +70,11 @@ class PostMealTime extends Command
             $statusCode = $response->getStatusCode();
             $responseBody = (string) $response->getBody();
 
+            \Log::info('PostMealTime Response', [
+                'status'   => $statusCode,
+                'response' => $responseBody,
+            ]);
+
             $this->info('Status Code: ' . $statusCode);
             $this->info('Response: ' . $responseBody);
 
