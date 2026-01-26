@@ -7,6 +7,7 @@ use App\Models\AttendanceLog;
 use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Request as GuzzleRequest;
 use GuzzleHttp\Exception\RequestException;
+use Illuminate\Support\Facades\Log;
 
 class PostMealTime extends Command
 {
@@ -70,7 +71,7 @@ class PostMealTime extends Command
             $statusCode = $response->getStatusCode();
             $responseBody = (string) $response->getBody();
 
-            \Log::info('PostMealTime Response', [
+            Log::info('PostMealTime Response', [
                 'status'   => $statusCode,
                 'response' => $responseBody,
             ]);
