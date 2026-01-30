@@ -112,29 +112,65 @@ class AdminController extends Controller
         $tempPath = $photo->getRealPath();
 
         // Call Python API to register face
-        $result = $this->faceService->registerFace($employee->nik, $tempPath);
+        try {
+            // ===============================
+            // Call Python Face API
+            // ===============================
+            $result = $this->faceService->registerFace($employee->nik, $tempPath);
 
-        if ($result['success']) {
-            // Save photo to Laravel storage
+            if (!is_array($result)) {
+                throw new \Exception('Response faceService bukan array');
+            }
+
+            if (!($result['success'] ?? false)) {
+                throw new \Exception($result['error'] ?? 'Register face gagal di Python API');
+            }
+
+            // ===============================
+            // Simpan foto ke storage
+            // ===============================
             $photoPath = $photo->store('faces', 'public');
 
-            // Update employee with photo path
-            $employee->update(['photo_path' => $photoPath]);
+            if (!$photoPath) {
+                throw new \Exception('Gagal menyimpan foto ke storage');
+            }
 
-            // Save face embedding data to database
+            // ===============================
+            // Update employee
+            // ===============================
+            $employee->update([
+                'photo_path' => $photoPath
+            ]);
+
+            // ===============================
+            // Simpan embedding
+            // ===============================
             $employee->faceEmbedding()->updateOrCreate(
                 ['nik' => $employee->nik],
                 [
-                    'embedding_path' => $result['embedding_path'] ?? '',
-                    'confidence_score' => $result['confidence'] ?? null,
-                    'bbox' => $result['bbox'] ?? null,
+                    'embedding_path'  => $result['embedding_path'] ?? null,
+                    'confidence_score'=> $result['confidence'] ?? null,
+                    'bbox'            => $result['bbox'] ?? null,
                 ]
             );
 
-            return redirect()->route('admin.employees')->with('success', 'Face registered successfully!');
-        }
+            return redirect()
+                ->route('admin.employees')
+                ->with('success', 'Face registered successfully!');
 
-        return back()->withErrors(['photo' => $result['error'] ?? 'Failed to register face']);
+        } catch (\Throwable $e) {
+
+            Log::error('Register Face Failed', [
+                'employee_nik' => $employee->nik,
+                'message'      => $e->getMessage(),
+                'file'         => $e->getFile(),
+                'line'         => $e->getLine(),
+            ]);
+
+            return back()->withErrors([
+                'photo' => 'Registrasi wajah gagal: ' . $e->getMessage()
+            ]);
+        }
     }
 
     public function showEmployee(Employee $employee)
