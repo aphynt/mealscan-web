@@ -31,7 +31,7 @@ class PostMealTime extends Command
 
         $payload = $logs->map(function ($log) {
             return [
-                // 'id' => $log->id,
+                'id' => $log->id,
                 'nik' => $log->nik,
                 'meal_type' => $log->meal_type,
                 'status' => $log->status,
@@ -46,6 +46,8 @@ class PostMealTime extends Command
                 'created_at' => $log->created_at
                     ? $log->created_at->format('Y-m-d H:i:s')
                     : now()->format('Y-m-d H:i:s'),
+                'food_category'    => 'basic',
+                'position'         => 'Mess SIMS',
             ];
         })->values();
 
