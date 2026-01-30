@@ -167,9 +167,8 @@ class AdminController extends Controller
                 'line'         => $e->getLine(),
             ]);
 
-            return back()->withErrors([
-                'photo' => 'Registrasi wajah gagal: ' . $e->getMessage()
-            ]);
+            return redirect()
+                ->route('admin.employees')->with('success', 'Registrasi wajah gagal: ' . $e->getMessage());
         }
     }
 
