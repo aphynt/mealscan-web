@@ -73,7 +73,7 @@ class AttendanceController extends Controller
             // Hapus temp file
             @unlink($tempFile);
 
-            Log::info('Face API result', $result);
+            // Log::info('Face API result', $result);
 
             if (!($result['success'] ?? false)) {
                 return response()->json([
