@@ -7,6 +7,7 @@ use App\Models\MealTimeSetting;
 use App\Models\AttendanceLog;
 use App\Services\FaceRecognitionService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 
 class AdminController extends Controller
@@ -98,6 +99,16 @@ class AdminController extends Controller
         ]);
 
         $photo = $request->file('photo');
+
+        if (!$photo || !$photo->isValid()) {
+            Log::error('Upload photo gagal', [
+                'error_code' => $photo?->getError(),
+                'error_msg'  => $photo?->getErrorMessage(),
+                'size'       => $photo?->getSize(),
+                'mime'       => $photo?->getMimeType(),
+            ]);
+
+        }
         $tempPath = $photo->getRealPath();
 
         // Call Python API to register face
