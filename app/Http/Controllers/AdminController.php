@@ -101,7 +101,7 @@ class AdminController extends Controller
         $photo = $request->file('photo');
 
         if (!$photo || !$photo->isValid()) {
-            Log::error('Upload photo gagal', [
+            Log::info('Upload photo gagal', [
                 'error_code' => $photo?->getError(),
                 'error_msg'  => $photo?->getErrorMessage(),
                 'size'       => $photo?->getSize(),
