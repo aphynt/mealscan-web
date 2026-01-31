@@ -148,7 +148,7 @@ class AdminController extends Controller
             $employee->faceEmbedding()->updateOrCreate(
                 ['nik' => $employee->nik],
                 [
-                    'embedding_path'  => $result['embedding_path'] ?? null,
+                    'embedding_path'  => $result['embedding_path'] ?? '',
                     'confidence_score'=> $result['confidence'] ?? null,
                     'bbox'            => $result['bbox'] ?? null,
                 ]
