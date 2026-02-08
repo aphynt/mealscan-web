@@ -146,7 +146,7 @@
 <!-- simpan nilai rating -->
 <input type="hidden" id="ratingValue" value="">
 
-        <label class="block mb-2 font-semibold text-gray-700">Saran</label>
+        {{-- <label class="block mb-2 font-semibold text-gray-700">Saran</label> --}}
         {{-- <textarea id="modalRemarks" rows="4"
             class="w-full px-3 py-3 border rounded-lg mb-6"
             placeholder="Opsional"></textarea> --}}
