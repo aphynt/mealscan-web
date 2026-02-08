@@ -46,7 +46,7 @@ class PostMealTime extends Command
                 'created_at' => $log->created_at
                     ? $log->created_at->format('Y-m-d H:i:s')
                     : now()->format('Y-m-d H:i:s'),
-                'food_category'    => 'basic',
+                'food_category'    => 1,
                 'position'         => 'Mess SIMS',
             ];
         })->values();

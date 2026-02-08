@@ -147,9 +147,9 @@
 <input type="hidden" id="ratingValue" value="">
 
         <label class="block mb-2 font-semibold text-gray-700">Saran</label>
-        <textarea id="modalRemarks" rows="4"
+        {{-- <textarea id="modalRemarks" rows="4"
             class="w-full px-3 py-3 border rounded-lg mb-6"
-            placeholder="Opsional"></textarea>
+            placeholder="Opsional"></textarea> --}}
 
         <button type="button" id="btnKirim" onclick="submitAttendance()"
             class="w-full bg-green-600 hover:bg-green-700 text-white py-3 rounded-lg font-bold">
@@ -333,7 +333,7 @@ async function submitAttendance() {
 
     const quantity = document.getElementById("modalQuantity").value;
     const rating = document.getElementById("ratingValue").value;
-    const remarks  = document.getElementById("modalRemarks").value;
+    // const remarks  = document.getElementById("modalRemarks").value;
 
     if (!nikInput.value) {
         btn.disabled = false;
@@ -374,7 +374,7 @@ async function submitAttendance() {
                 image: imageData,
                 quantity: quantity,
                 rating: rating,
-                remarks: remarks,
+                // remarks: remarks,
                 recognize_only: false
             })
         });
