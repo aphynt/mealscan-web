@@ -77,8 +77,12 @@ class AttendanceController extends Controller
 
             if (!($result['success'] ?? false)) {
                 return response()->json([
-                    'success' => false,
-                    'message' => $result['message'] ?? 'Wajah tidak dikenali',
+                    'success'               => false,
+                    'message'               => $result['message'] ?? 'Wajah tidak dikenali',
+                    'is_real_face'          => $result['is_real_face'] ?? null,
+                    'anti_spoofing_score'   => $result['anti_spoofing_score'] ?? null,
+                    'confidence'            => $result['confidence'] ?? null,
+                    'similarity'            => $result['similarity'] ?? 0.0,
                 ]);
             }
 
@@ -99,12 +103,15 @@ class AttendanceController extends Controller
             // MODE RECOGNIZE ONLY: hanya kembalikan data tanpa simpan absensi
             if ($recognizeOnly) {
                 return response()->json([
-                    'success'        => true,
-                    'nik'            => $nik,
-                    'employee_id'    => $nik,
-                    'employee_name'  => $employeeName,
-                    'similarity'     => $result['similarity'] ?? null,
-                    'message'        => 'Wajah berhasil dikenali',
+                    'success'               => true,
+                    'nik'                   => $nik,
+                    'employee_id'           => $nik,
+                    'employee_name'         => $employeeName,
+                    'similarity'            => $result['similarity'] ?? null,
+                    'confidence'            => $result['confidence'] ?? null,
+                    'is_real_face'          => $result['is_real_face'] ?? null,
+                    'anti_spoofing_score'   => $result['anti_spoofing_score'] ?? null,
+                    'message'               => 'Wajah berhasil dikenali',
                 ]);
             }
 
@@ -133,22 +140,44 @@ class AttendanceController extends Controller
                 'created_by'       => 'system',
                 'quantity'         => $request->quantity ?? 1,
                 'rating'           => $request->rating ?? null,
-                'sys_post'           => 0,
+                'sys_post'         => 0,
                 'remarks'          => $request->remarks ?? null,
                 'attendance_date'  => today(),
                 'attendance_time'  => now(),
                 'similarity_score' => $result['similarity'] ?? null,
                 'confidence_score' => $result['confidence'] ?? null,
+                'is_real_face'     => $result['is_real_face'] ?? null,
             ]);
 
+            // Save photo evidence
+            if ($imageData) {
+                $photoFileName = $nik . '_' . $currentMealType . '_' . now()->format('YmdHis') . '.jpg';
+                $photoPath = 'attendance_photos/' . today()->format('Y-m-d') . '/' . $photoFileName;
+                
+                // Create directory if not exists
+                $fullPath = storage_path('app/public/' . $photoPath);
+                if (!file_exists(dirname($fullPath))) {
+                    mkdir(dirname($fullPath), 0755, true);
+                }
+                
+                // Save photo
+                file_put_contents($fullPath, $imageData);
+                
+                // Update attendance record with photo path
+                $attendance->photo_path = $photoPath;
+                $attendance->save();
+            }
+
             return response()->json([
-                'success'       => true,
-                'message'       => "Absensi {$currentMealType} berhasil. Terimakasih!",
-                'nik'           => $nik,
-                'employee_name' => $employeeName,
-                'meal_type'     => $currentMealType,
-                'quantity'      => $attendance->quantity,
-                'attendance_id' => $attendance->id,
+                'success'               => true,
+                'message'               => "Absensi {$currentMealType} berhasil. Terimakasih!",
+                'nik'                   => $nik,
+                'employee_name'         => $employeeName,
+                'meal_type'             => $currentMealType,
+                'quantity'              => $attendance->quantity,
+                'attendance_id'         => $attendance->id,
+                'is_real_face'          => $result['is_real_face'] ?? null,
+                'anti_spoofing_score'   => $result['anti_spoofing_score'] ?? null,
             ]);
 
         } catch (\Exception $e) {

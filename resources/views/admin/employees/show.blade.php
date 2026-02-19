@@ -111,14 +111,26 @@
 
     <!-- Attendance Statistics -->
     <div class="bg-white shadow-lg rounded-xl p-8">
-        <h2 class="text-2xl font-bold text-gray-900 mb-4">Attendance Statistics</h2>
+        <h2 class="text-2xl font-bold text-gray-900 mb-6">Attendance Statistics</h2>
         
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
             <div class="bg-blue-50 rounded-lg p-4">
                 <p class="text-sm text-blue-600 font-medium">Total Attendance</p>
                 <p class="text-3xl font-bold text-blue-900 mt-1">{{ $employee->attendanceLogs()->count() }}</p>
             </div>
 
+            <div class="bg-green-50 rounded-lg p-4">
+                <p class="text-sm text-green-600 font-medium">Real Face</p>
+                <p class="text-3xl font-bold text-green-900 mt-1">{{ $employee->attendanceLogs()->where('is_real_face', true)->count() }}</p>
+            </div>
+
+            <div class="bg-red-50 rounded-lg p-4">
+                <p class="text-sm text-red-600 font-medium">Fake Face</p>
+                <p class="text-3xl font-bold text-red-900 mt-1">{{ $employee->attendanceLogs()->where('is_real_face', false)->count() }}</p>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div class="bg-yellow-50 rounded-lg p-4">
                 <p class="text-sm text-yellow-600 font-medium">Breakfast</p>
                 <p class="text-3xl font-bold text-yellow-900 mt-1">{{ $employee->attendanceLogs()->where('meal_type', 'breakfast')->count() }}</p>
@@ -133,6 +145,88 @@
                 <p class="text-sm text-purple-600 font-medium">Dinner</p>
                 <p class="text-3xl font-bold text-purple-900 mt-1">{{ $employee->attendanceLogs()->where('meal_type', 'dinner')->count() }}</p>
             </div>
+        </div>
+    </div>
+
+    <!-- Recent Attendance Logs -->
+    <div class="bg-white shadow-lg rounded-xl p-8">
+        <div class="flex items-center justify-between mb-6">
+            <h2 class="text-2xl font-bold text-gray-900">Recent Attendance Logs</h2>
+            <a href="{{ route('admin.attendance-report', ['employee_nik' => $employee->nik]) }}" 
+               class="text-indigo-600 hover:text-indigo-800 font-medium text-sm">
+                View All →
+            </a>
+        </div>
+        
+        <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Date & Time</th>
+                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Meal Type</th>
+                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Quantity</th>
+                        <th class="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase">Status</th>
+                        <th class="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase">Bukti Foto</th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                    @forelse($employee->attendanceLogs()->latest()->take(10)->get() as $log)
+                        <tr class="hover:bg-gray-50">
+                            <td class="px-4 py-3 whitespace-nowrap text-sm">
+                                <div>{{ $log->attendance_date->format('d/m/Y') }}</div>
+                                <div class="text-xs text-gray-500">{{ $log->attendance_time->format('H:i:s') }}</div>
+                            </td>
+                            <td class="px-4 py-3 whitespace-nowrap">
+                                <span class="px-2 py-1 text-xs font-semibold rounded-full
+                                    @if($log->meal_type === 'breakfast') bg-yellow-100 text-yellow-800
+                                    @elseif($log->meal_type === 'lunch') bg-blue-100 text-blue-800
+                                    @else bg-purple-100 text-purple-800
+                                    @endif">
+                                    {{ ucfirst($log->meal_type) }}
+                                </span>
+                            </td>
+                            <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-900">
+                                {{ $log->quantity }}
+                            </td>
+                            <td class="px-4 py-3 whitespace-nowrap text-center">
+                                @if($log->is_real_face === true)
+                                    <span class="px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">
+                                        ✓ REAL
+                                    </span>
+                                @elseif($log->is_real_face === false)
+                                    <span class="px-2 py-1 text-xs font-semibold rounded-full bg-red-100 text-red-800">
+                                        ⚠ FAKE
+                                    </span>
+                                @else
+                                    <span class="px-2 py-1 text-xs font-semibold rounded-full bg-gray-100 text-gray-600">
+                                        N/A
+                                    </span>
+                                @endif
+                            </td>
+                            <td class="px-4 py-3 whitespace-nowrap text-center">
+                                @if($log->photo_path)
+                                    <a href="{{ asset('storage/' . $log->photo_path) }}" 
+                                       target="_blank" 
+                                       class="inline-flex items-center px-2 py-1 bg-blue-600 hover:bg-blue-700 text-white text-xs font-medium rounded transition-colors">
+                                        <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                                        </svg>
+                                        Lihat
+                                    </a>
+                                @else
+                                    <span class="text-xs text-gray-400">-</span>
+                                @endif
+                            </td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="5" class="px-4 py-8 text-center text-gray-500">
+                                No attendance records yet
+                            </td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </table>
         </div>
     </div>
 </div>

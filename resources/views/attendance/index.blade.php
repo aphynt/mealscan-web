@@ -16,9 +16,15 @@
             <h2 class="text-3xl font-bold text-white mb-4">Absen Face Recognition</h2>
 
             <!-- Camera -->
-            <div class="bg-zinc-200 rounded-2xl overflow-hidden shadow-2xl mb-6">
+            <div class="bg-zinc-200 rounded-2xl overflow-hidden shadow-2xl mb-6 relative">
                 <video id="video" autoplay playsinline class="w-full h-auto" style="transform: scaleX(-1);"></video>
                 <canvas id="canvas" class="hidden"></canvas>
+                
+                <!-- Anti-Spoofing Status Overlay -->
+                <div id="antiSpoofStatus" class="absolute top-4 left-4 px-4 py-2 rounded-lg font-bold text-sm shadow-lg hidden">
+                    <span id="spoofLabel"></span>
+                    <span id="spoofScore" class="text-xs ml-2"></span>
+                </div>
             </div>
 
             <!-- Auto-fill NIK / Name -->
@@ -85,6 +91,7 @@
                             <th class="px-4 py-3 text-xs font-bold">Tanggal & Waktu</th>
                             <th class="px-4 py-3 text-xs font-bold">Jumlah</th>
                             <th class="px-4 py-3 text-xs font-bold">Kategori</th>
+                            <th class="px-4 py-3 text-xs font-bold">Status</th>
                         </tr>
                     </thead>
 
@@ -103,6 +110,15 @@
                                     @else bg-purple-100 text-purple-800 @endif">
                                     {{ ucfirst($a->meal_type) }}
                                 </span>
+                            </td>
+                            <td class="px-4 py-3">
+                                @if($a->is_real_face === null)
+                                    <span class="px-2 py-1 rounded text-xs font-semibold bg-gray-100 text-gray-600">N/A</span>
+                                @elseif($a->is_real_face)
+                                    <span class="px-2 py-1 rounded text-xs font-semibold bg-green-100 text-green-800">✓ REAL</span>
+                                @else
+                                    <span class="px-2 py-1 rounded text-xs font-semibold bg-red-100 text-red-800">⚠ FAKE</span>
+                                @endif
                             </td>
                         </tr>
                         @endforeach
@@ -272,6 +288,35 @@ setInterval(async () => {
         });
 
         const data = await res.json();
+
+        // Debug: log response data
+        console.log("Recognition response:", data);
+
+        // Update Anti-Spoofing Status Display
+        const statusDiv = document.getElementById("antiSpoofStatus");
+        const labelSpan = document.getElementById("spoofLabel");
+        const scoreSpan = document.getElementById("spoofScore");
+
+        if (data.is_real_face !== null && data.is_real_face !== undefined) {
+            statusDiv.classList.remove("hidden");
+            
+            if (data.is_real_face) {
+                // Real Face
+                statusDiv.classList.remove("bg-red-500");
+                statusDiv.classList.add("bg-green-500", "text-white");
+                labelSpan.textContent = "🔒 REAL";
+                scoreSpan.textContent = `(${data.anti_spoofing_score?.toFixed(3) || ''})`;
+            } else {
+                // Fake Face
+                statusDiv.classList.remove("bg-green-500");
+                statusDiv.classList.add("bg-red-500", "text-white");
+                labelSpan.textContent = "⚠️ FAKE";
+                scoreSpan.textContent = `(${data.anti_spoofing_score?.toFixed(3) || ''})`;
+            }
+        } else {
+            // No anti-spoofing data
+            statusDiv.classList.add("hidden");
+        }
 
         if (data.success && data.nik && data.nik !== lastRecognized) {
             nikInput.value = data.nik;
