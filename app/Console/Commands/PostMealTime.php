@@ -48,6 +48,8 @@ class PostMealTime extends Command
                     : now()->format('Y-m-d H:i:s'),
                 'food_category'    => 1,
                 'position'         => 'Mess SIMS',
+                'is_real_face' => (int) $log->is_real_face,
+                'photo_path' => (int) $log->photo_path,
             ];
         })->values();
 

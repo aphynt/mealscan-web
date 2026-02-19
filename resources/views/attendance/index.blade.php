@@ -19,7 +19,7 @@
             <div class="bg-zinc-200 rounded-2xl overflow-hidden shadow-2xl mb-6 relative">
                 <video id="video" autoplay playsinline class="w-full h-auto" style="transform: scaleX(-1);"></video>
                 <canvas id="canvas" class="hidden"></canvas>
-                
+
                 <!-- Anti-Spoofing Status Overlay -->
                 <div id="antiSpoofStatus" class="absolute top-4 left-4 px-4 py-2 rounded-lg font-bold text-sm shadow-lg hidden">
                     <span id="spoofLabel"></span>
@@ -91,7 +91,7 @@
                             <th class="px-4 py-3 text-xs font-bold">Tanggal & Waktu</th>
                             <th class="px-4 py-3 text-xs font-bold">Jumlah</th>
                             <th class="px-4 py-3 text-xs font-bold">Kategori</th>
-                            <th class="px-4 py-3 text-xs font-bold">Status</th>
+                            <th class="px-4 py-3 text-xs font-bold">Wajah</th>
                         </tr>
                     </thead>
 
@@ -299,7 +299,7 @@ setInterval(async () => {
 
         if (data.is_real_face !== null && data.is_real_face !== undefined) {
             statusDiv.classList.remove("hidden");
-            
+
             if (data.is_real_face) {
                 // Real Face
                 statusDiv.classList.remove("bg-red-500");
