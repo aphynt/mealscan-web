@@ -122,11 +122,11 @@
                             </td> --}}
                             <td class="px-4 py-3">
                                 @if($a->is_real_face === null)
-                                    N/A
+                                    <span class="px-2 py-1 rounded text-xs font-semibold bg-gray-100 text-gray-600">N/A</span>
                                 @elseif($a->is_real_face)
-                                    ✓
+                                    <span class="px-2 py-1 rounded text-xs font-semibold bg-green-100 text-green-800">✓</span>
                                 @else
-                                    ⚠
+                                    <span class="px-2 py-1 rounded text-xs font-semibold bg-red-100 text-red-800">⚠</span>
                                 @endif
                             </td>
                         </tr>
