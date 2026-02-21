@@ -111,13 +111,22 @@
                                     {{ ucfirst($a->meal_type) }}
                                 </span>
                             </td>
-                            <td class="px-4 py-3">
+                            {{-- <td class="px-4 py-3">
                                 @if($a->is_real_face === null)
                                     <span class="px-2 py-1 rounded text-xs font-semibold bg-gray-100 text-gray-600">N/A</span>
                                 @elseif($a->is_real_face)
                                     <span class="px-2 py-1 rounded text-xs font-semibold bg-green-100 text-green-800">✓ REAL</span>
                                 @else
                                     <span class="px-2 py-1 rounded text-xs font-semibold bg-red-100 text-red-800">⚠ FAKE</span>
+                                @endif
+                            </td> --}}
+                            <td class="px-4 py-3">
+                                @if($a->is_real_face === null)
+                                    N/A
+                                @elseif($a->is_real_face)
+                                    ✓
+                                @else
+                                    ⚠
                                 @endif
                             </td>
                         </tr>
