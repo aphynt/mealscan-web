@@ -149,33 +149,64 @@
 
         <!-- Tombol Exit -->
         <button type="button" onclick="closeSubmitModal()"
-            class="absolute top-3 right-3 text-gray-500 hover:text-gray-700 text-xl font-bold" aria-label="Tutup">
+            class="absolute top-3 right-3 text-gray-500 hover:text-gray-700 text-xl font-bold">
             ✕
         </button>
 
-        <h2 class="text-2xl font-bold text-center mb-4">SUBMIT ABSENSI</h2>
+        <h2 class="text-2xl font-bold text-center mb-6">SUBMIT ABSENSI</h2>
 
-        <label class="block mb-2 font-semibold text-gray-700">Jumlah Makanan</label>
-        <input id="modalQuantity" type="number" value="1" min="1" max="10"
-            class="w-full px-3 py-3 border rounded-lg mb-4">
+        <!-- ================= JUMLAH MAKANAN ================= -->
+        <label class="block mb-2 font-semibold text-gray-700">
+            Jumlah Makanan
+        </label>
 
-        <label class="block mb-2 font-semibold text-gray-700">Rating Makanan</label>
-        <div id="ratingStars" class="flex gap-6 mb-6 text-5xl cursor-pointer select-none">
-            <span data-value="1" class="text-gray-300">★</span>
-            <span data-value="2" class="text-gray-300">★</span>
-            <span data-value="3" class="text-gray-300">★</span>
-            <span data-value="4" class="text-gray-300">★</span>
-            <span data-value="5" class="text-gray-300">★</span>
+        <div class="flex items-center justify-between mb-6">
+
+            <button type="button"
+                onclick="changeQty(-1)"
+                class="w-12 h-12 rounded-lg bg-gray-200 hover:bg-gray-300 text-2xl font-bold transition">
+                −
+            </button>
+
+            <input id="modalQuantity"
+                type="number"
+                value="1"
+                min="1"
+                max="10"
+                readonly
+                class="w-24 text-center px-3 py-3 border rounded-lg font-semibold text-lg">
+
+            <button type="button"
+                onclick="changeQty(1)"
+                class="w-12 h-12 rounded-lg bg-gray-200 hover:bg-gray-300 text-2xl font-bold transition">
+                +
+            </button>
+
         </div>
 
-<!-- simpan nilai rating -->
-<input type="hidden" id="ratingValue" value="">
+        <!-- ================= RATING MAKANAN ================= -->
+        <label class="block mb-2 font-semibold text-gray-700">
+            Rating Makanan
+        </label>
 
-        {{-- <label class="block mb-2 font-semibold text-gray-700">Saran</label> --}}
-        {{-- <textarea id="modalRemarks" rows="4"
-            class="w-full px-3 py-3 border rounded-lg mb-6"
-            placeholder="Opsional"></textarea> --}}
+        <div id="ratingStars"
+            class="flex justify-between mb-3 text-4xl cursor-pointer select-none">
 
+            <span data-value="1" class="star text-gray-300 transition duration-200">★</span>
+            <span data-value="2" class="star text-gray-300 transition duration-200">★</span>
+            <span data-value="3" class="star text-gray-300 transition duration-200">★</span>
+            <span data-value="4" class="star text-gray-300 transition duration-200">★</span>
+            <span data-value="5" class="star text-gray-300 transition duration-200">★</span>
+
+        </div>
+
+        <p id="ratingText" class="text-center text-sm text-gray-600 mb-6 italic">
+            Belum ada rating
+        </p>
+
+        <input type="hidden" id="ratingValue" value="">
+
+        <!-- ================= BUTTON ================= -->
         <button type="button" id="btnKirim" onclick="submitAttendance()"
             class="w-full bg-green-600 hover:bg-green-700 text-white py-3 rounded-lg font-bold">
             KIRIM
@@ -183,7 +214,6 @@
 
     </div>
 </div>
-
 <!-- GENERIC MODAL -->
 <div id="modal" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center z-50">
     <div class="bg-white rounded-2xl p-8 max-w-md w-full mx-4 shadow-2xl">
@@ -202,6 +232,72 @@
         } catch (err) {}
     }
 });
+// ================= QUANTITY =================
+function changeQty(amount) {
+    const input = document.getElementById("modalQuantity");
+    let current = parseInt(input.value);
+
+    current += amount;
+
+    if (current < 1) current = 1;
+    if (current > 10) current = 10;
+
+    input.value = current;
+}
+document.addEventListener("DOMContentLoaded", function () {
+
+    const stars = document.querySelectorAll("#ratingStars .star");
+    const ratingText = document.getElementById("ratingText");
+    const ratingInput = document.getElementById("ratingValue");
+
+    const ratingDescriptions = {
+        1: "Sangat Tidak Enak",
+        2: "Kurang Enak",
+        3: "Cukup",
+        4: "Enak",
+        5: "Sangat Enak"
+    };
+
+    let currentRating = 0;
+
+    stars.forEach(star => {
+
+        star.addEventListener("mouseover", function () {
+            highlightStars(this.dataset.value);
+        });
+
+        star.addEventListener("mouseout", function () {
+            highlightStars(currentRating);
+        });
+
+        star.addEventListener("click", function () {
+
+            currentRating = parseInt(this.dataset.value);
+
+            // ✅ Simpan ke hidden input
+            ratingInput.value = currentRating;
+
+            highlightStars(currentRating);
+
+            ratingText.textContent = ratingDescriptions[currentRating];
+
+        });
+
+    });
+
+    function highlightStars(rating) {
+        stars.forEach(star => {
+            if (parseInt(star.dataset.value) <= rating) {
+                star.classList.remove("text-gray-300");
+                star.classList.add("text-yellow-400");
+            } else {
+                star.classList.remove("text-yellow-400");
+                star.classList.add("text-gray-300");
+            }
+        });
+    }
+
+});
 /* =============================
       CLOCK
 ============================= */
@@ -216,28 +312,6 @@ function updateClock() {
 }
 setInterval(updateClock, 1000);
 updateClock();
-
-// --- Rating Bintang ---
-const stars = document.querySelectorAll("#ratingStars span");
-const ratingInput = document.getElementById("ratingValue");
-
-stars.forEach(star => {
-    star.addEventListener("click", () => {
-        const rating = star.getAttribute("data-value");
-        ratingInput.value = rating; // simpan nilai rating
-
-        // update tampilan bintang
-        stars.forEach(s => {
-            if (s.getAttribute("data-value") <= rating) {
-                s.classList.remove("text-gray-300");
-                s.classList.add("text-yellow-400");
-            } else {
-                s.classList.remove("text-yellow-400");
-                s.classList.add("text-gray-300");
-            }
-        });
-    });
-});
 
 
 /* =============================
