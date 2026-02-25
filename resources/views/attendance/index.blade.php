@@ -472,57 +472,63 @@ async function submitAttendance() {
     }
 }
 
-
-/* =============================
-      GENERIC MODAL
-============================= */
 function showModal(type, title, message, reload = false) {
+
     const modal = document.getElementById("modal");
 
-    let icon = "";
+    // ================= CONFIG TIPE =================
+    const config = {
+        success: {
+            color: "#22c55e",
+            button: "#f2a900",
+            animation: "/images/success.json"
+        },
+        error: {
+            color: "#ef4444",
+            button: "#dc2626",
+            animation: "/images/error.json"
+        },
+        warning: {
+            color: "#facc15",
+            button: "#f59e0b",
+            animation: "/images/warning.json"
+        },
+        info: {
+            color: "#3b82f6",
+            button: "#2563eb",
+            animation: "/images/info.json"
+        }
+    };
 
-    if (type === "success") {
-        icon = `
-            <svg class="w-14 h-14 text-green-600 mx-auto mb-4" fill="none" stroke="currentColor" stroke-width="2"
-                viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round"
-                    d="M9 12l2 2l4 -4M12 22c5.523 0 10 -4.477 10 -10S17.523 2 12 2S2 6.477 2 12s4.477 10 10 10z"/>
-            </svg>
-        `;
-    } else if (type === "error") {
-        icon = `
-            <svg class="w-14 h-14 text-red-600 mx-auto mb-4" fill="none" stroke="currentColor" stroke-width="2"
-                viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round"
-                    d="M12 9v4m0 4h.01M12 2a10 10 0 100 20a10 10 0 000-20z"/>
-            </svg>
-        `;
-    } else if (type === "warning") {
-        icon = `
-            <svg class="w-14 h-14 text-yellow-500 mx-auto mb-4" fill="none" stroke="currentColor" stroke-width="2"
-                viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round"
-                    d="M12 9v2m0 4h.01M21 18H3l9-15l9 15z"/>
-            </svg>
-        `;
-    } else {
-        // default info
-        icon = `
-            <svg class="w-14 h-14 text-blue-600 mx-auto mb-4" fill="none" stroke="currentColor" stroke-width="2"
-                viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round"
-                    d="M12 8h.01M12 12v4m0 6a10 10 0 110-20a10 10 0 010 20z"/>
-            </svg>
-        `;
-    }
+    const selected = config[type] || config.info;
 
+    // ================= HTML =================
     const html = `
-        <div class="text-center px-6 py-4">
-            ${icon}
-            <h3 class="text-2xl font-bold mb-2">${title}</h3>
-            <p class="text-gray-600 mb-6">${message}</p>
-            <button type="button" onclick="closeModal(${reload})"
-                class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg">
+        <div class="text-center px-6 py-6">
+
+            <div id="modalAnimation"
+                 style="width:120px;height:120px;margin:auto;margin-bottom:15px">
+            </div>
+
+            <h3 class="text-2xl font-bold mb-2" style="color:${selected.color}">
+                ${title}
+            </h3>
+
+            <p class="text-gray-600 mb-6">
+                ${message}
+            </p>
+
+            <button type="button"
+                onclick="closeModal(${reload})"
+                style="
+                    background:${selected.button};
+                    color:#000;
+                    padding:12px 28px;
+                    border:none;
+                    border-radius:8px;
+                    font-weight:600;
+                    cursor:pointer;
+                ">
                 OK
             </button>
         </div>
@@ -530,7 +536,25 @@ function showModal(type, title, message, reload = false) {
 
     document.getElementById("modalContent").innerHTML = html;
 
-    if (modal) modal.classList.remove("hidden");
+    if (modal) {
+        modal.classList.remove("hidden");
+        modal.classList.add("animate-fadeIn");
+    }
+
+    // ================= LOAD LOTTIE =================
+    setTimeout(() => {
+        const container = document.getElementById("modalAnimation");
+
+        if (container && typeof lottie !== "undefined") {
+            lottie.loadAnimation({
+                container: container,
+                renderer: "svg",
+                loop: true, // <-- ubah ke true
+                autoplay: true,
+                path: selected.animation
+            });
+        }
+    }, 100);
 }
 
 
