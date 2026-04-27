@@ -56,6 +56,7 @@ class PostMealTime extends Command
                 'status' => $log->status,
                 'quantity' => (int) $log->quantity,
                 'remarks' => $log->remarks,
+                'order_type' => $log->order_type,
                 'created_by' => $log->created_by ?? 'system',
                 'rating' => (int) $log->rating,
                 'attendance_date' => \Carbon\Carbon::parse($log->attendance_date)->format('Y-m-d'),
