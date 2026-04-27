@@ -90,8 +90,8 @@
                             <th class="px-4 py-3 text-xs font-bold">Nama</th>
                             <th class="px-4 py-3 text-xs font-bold">Tanggal & Waktu</th>
                             <th class="px-4 py-3 text-xs font-bold">Jumlah</th>
-                            <th class="px-4 py-3 text-xs font-bold">Kategori</th>
                             <th class="px-4 py-3 text-xs font-bold">Order Type</th>
+                            <th class="px-4 py-3 text-xs font-bold">Kategori</th>
                             <th class="px-4 py-3 text-xs font-bold">Wajah</th>
                         </tr>
                     </thead>
