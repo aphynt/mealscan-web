@@ -91,6 +91,7 @@
                             <th class="px-4 py-3 text-xs font-bold">Tanggal & Waktu</th>
                             <th class="px-4 py-3 text-xs font-bold">Jumlah</th>
                             <th class="px-4 py-3 text-xs font-bold">Kategori</th>
+                            <th class="px-4 py-3 text-xs font-bold">Order Type</th>
                             <th class="px-4 py-3 text-xs font-bold">Wajah</th>
                         </tr>
                     </thead>
@@ -103,6 +104,7 @@
                             <td class="px-4 py-3">{{ $a->employee->name ?? '-' }}</td>
                             <td class="px-4 py-3">{{ $a->attendance_time->format('d/m/Y H:i') }}</td>
                             <td class="px-4 py-3 font-semibold">{{ $a->quantity }}</td>
+                            <td class="px-4 py-">{{ $a->order_type }}</td>
                             <td class="px-4 py-3">
                                 <span class="px-2 py-1 rounded text-xs font-semibold
                                     @if($a->meal_type==='breakfast') bg-yellow-100 text-yellow-800
@@ -183,6 +185,29 @@
             </button>
 
         </div>
+
+        <!-- ================= TIPE AMBIL MAKANAN ================= -->
+        <label class="block mb-2 font-semibold text-gray-700">
+            Tipe Ambil Makanan
+        </label>
+
+        <div class="grid grid-cols-2 gap-3 mb-6">
+            <button type="button"
+                id="btnDineIn"
+                onclick="setOrderType('Dine In')"
+                class="order-type-btn bg-green-600 text-white border border-green-600 py-3 rounded-lg font-bold transition">
+                Makan Di Kantin
+            </button>
+
+            <button type="button"
+                id="btnTakeAway"
+                onclick="setOrderType('Take Away')"
+                class="order-type-btn bg-white text-gray-700 border border-gray-300 hover:bg-gray-100 py-3 rounded-lg font-bold transition">
+                Bungkus
+            </button>
+        </div>
+
+        <input type="hidden" id="orderType" value="Dine In">
 
         <!-- ================= RATING MAKANAN ================= -->
         <label class="block mb-2 font-semibold text-gray-700">
@@ -298,6 +323,29 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
 });
+
+function setOrderType(type) {
+    const orderTypeInput = document.getElementById("orderType");
+    const btnDineIn = document.getElementById("btnDineIn");
+    const btnTakeAway = document.getElementById("btnTakeAway");
+
+    orderTypeInput.value = type;
+
+    if (type === "DINE_IN") {
+        btnDineIn.className =
+            "order-type-btn bg-green-600 text-white border border-green-600 py-3 rounded-lg font-bold transition";
+
+        btnTakeAway.className =
+            "order-type-btn bg-white text-gray-700 border border-gray-300 hover:bg-gray-100 py-3 rounded-lg font-bold transition";
+    } else {
+        btnTakeAway.className =
+            "order-type-btn bg-green-600 text-white border border-green-600 py-3 rounded-lg font-bold transition";
+
+        btnDineIn.className =
+            "order-type-btn bg-white text-gray-700 border border-gray-300 hover:bg-gray-100 py-3 rounded-lg font-bold transition";
+    }
+}
+
 /* =============================
       CLOCK
 ============================= */
@@ -461,6 +509,7 @@ async function submitAttendance() {
 
     const quantity = document.getElementById("modalQuantity").value;
     const rating = document.getElementById("ratingValue").value;
+    const orderType = document.getElementById("orderType").value;
     // const remarks  = document.getElementById("modalRemarks").value;
 
     if (!nikInput.value) {
@@ -502,6 +551,7 @@ async function submitAttendance() {
                 image: imageData,
                 quantity: quantity,
                 rating: rating,
+                order_type: orderType,
                 // remarks: remarks,
                 recognize_only: false
             })

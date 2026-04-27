@@ -35,6 +35,7 @@ class AttendanceController extends Controller
             'image'         => 'required|string',
             'quantity'      => 'integer|min:1|max:10',
             'remarks'       => 'nullable|string',
+            'order_type'       => 'nullable|string',
             'rating'       => 'nullable|integer',
             'recognize_only'=> 'boolean',
         ]);
@@ -142,6 +143,7 @@ class AttendanceController extends Controller
                 'rating'           => $request->rating ?? null,
                 'sys_post'         => 0,
                 'remarks'          => $request->remarks ?? null,
+                'order_type'       => $request->order_type ?? null,
                 'attendance_date'  => today(),
                 'attendance_time'  => now(),
                 'similarity_score' => $result['similarity'] ?? null,
@@ -153,16 +155,16 @@ class AttendanceController extends Controller
             if ($imageData) {
                 $photoFileName = $nik . '_' . $currentMealType . '_' . now()->format('YmdHis') . '.jpg';
                 $photoPath = 'attendance_photos/' . today()->format('Y-m-d') . '/' . $photoFileName;
-                
+
                 // Create directory if not exists
                 $fullPath = storage_path('app/public/' . $photoPath);
                 if (!file_exists(dirname($fullPath))) {
                     mkdir(dirname($fullPath), 0755, true);
                 }
-                
+
                 // Save photo
                 file_put_contents($fullPath, $imageData);
-                
+
                 // Update attendance record with photo path
                 $attendance->photo_path = $photoPath;
                 $attendance->save();

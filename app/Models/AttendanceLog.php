@@ -15,6 +15,7 @@ class AttendanceLog extends Model
         'rating',
         'sys_post',
         'remarks',
+        'order_type',
         'created_by',
         'attendance_date',
         'attendance_time',
