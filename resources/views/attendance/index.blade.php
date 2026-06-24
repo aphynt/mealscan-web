@@ -3,209 +3,7 @@
 @section('title', 'Face Recognition Attendance')
 
 @section('content')
-<style>
-.football-bg{
-    position:relative;
-    overflow:hidden;
-    min-height:100vh;
-
-    background:
-        radial-gradient(
-            circle at top left,
-            rgba(0,84,166,.10),
-            transparent 30%
-        ),
-
-        radial-gradient(
-            circle at bottom left,
-            rgba(255,0,80,.05),
-            transparent 40%
-        ),
-
-        radial-gradient(
-            circle at bottom right,
-            rgba(59,130,246,.08),
-            transparent 35%
-        ),
-
-        linear-gradient(
-            135deg,
-            #f8fafc 0%,
-            #eef6ff 50%,
-            #ffffff 100%
-        );
-}
-
-/* Divider tengah */
-.center-divider{
-    position:absolute;
-    left:50%;
-    top:0;
-    width:1px;
-    height:100%;
-    background:linear-gradient(
-        transparent,
-        rgba(15,23,42,.12),
-        transparent
-    );
-
-    z-index:1;
-}
-
-/* Garis lingkar FIFA kiri bawah */
-.wc-line{
-    position:absolute;
-    bottom:-250px;
-    left:-250px;
-
-    width:900px;
-    height:900px;
-
-    border:10px solid rgba(59,130,246,.08);
-    border-radius:50%;
-
-    z-index:0;
-}
-
-/* Lingkar kedua */
-.wc-line::before{
-    content:'';
-
-    position:absolute;
-    inset:60px;
-
-    border:8px solid rgba(255,0,80,.05);
-    border-radius:50%;
-}
-
-/* Lingkar ketiga */
-.wc-line::after{
-    content:'';
-
-    position:absolute;
-    inset:120px;
-
-    border:6px solid rgba(0,84,166,.06);
-    border-radius:50%;
-}
-
-/* Watermark trofi */
-.trophy-mark{
-    position:absolute;
-
-    top:40px;
-    left:40px;
-
-    font-size:260px;
-
-    opacity:.035;
-
-    color:#0f172a;
-
-    pointer-events:none;
-    user-select:none;
-
-    z-index:0;
-}
-
-/* Watermark bola kanan bawah */
-.right-panel{
-    position:relative;
-}
-
-.right-panel::after{
-    content:'⚽';
-
-    position:absolute;
-
-    bottom:20px;
-    right:20px;
-
-    font-size:220px;
-
-    opacity:.03;
-
-    pointer-events:none;
-}
-
-/* Lingkar dekorasi kanan */
-.right-panel::before{
-    content:'';
-
-    position:absolute;
-
-    right:-150px;
-    top:50%;
-
-    width:450px;
-    height:450px;
-
-    border:10px solid rgba(59,130,246,.05);
-    border-radius:50%;
-
-    transform:translateY(-50%);
-}
-
-/* Kamera */
-.camera-card{
-    background:rgba(255,255,255,.9);
-    backdrop-filter:blur(10px);
-
-    border:1px solid rgba(255,255,255,.5);
-
-    box-shadow:
-        0 20px 40px rgba(0,0,0,.08);
-}
-
-/* Panel kanan */
-.attendance-panel{
-    background:rgba(255,255,255,.85);
-    backdrop-filter:blur(12px);
-}
-
-/* Judul */
-.worldcup-title{
-    color:#0A2342;
-    letter-spacing:.5px;
-}
-
-/* Jam */
-.clock-style{
-    color:#0A2342;
-    font-weight:800;
-}
-
-/* Table */
-.table-header{
-    background:linear-gradient(
-        90deg,
-        #dbeafe,
-        #eff6ff
-    );
-}
-.stadium-light{
-    position:absolute;
-    bottom:-120px;
-    left:0;
-
-    width:50%;
-    height:250px;
-
-    background:
-        radial-gradient(
-            ellipse at center,
-            rgba(59,130,246,.08),
-            transparent 70%
-        );
-
-    pointer-events:none;
-}
-</style>
-<div class="min-h-screen flex football-bg">
-    <div class="center-divider"></div>
-    <div class="wc-line"></div>
-    <div class="stadium-light"></div>
-    <div class="trophy-mark">🏆</div>
+<div class="min-h-screen bg-[#ffffff] flex">
     <!-- Left Side -->
     <div class="w-1/2 flex items-center justify-center p-8">
         <div class="w-full max-w-2xl text-center">
@@ -215,12 +13,10 @@
                 <img src="{{ asset('logo-dark.png') }}" class="w-100 h-auto object-contain" alt="Logo">
             </div>
 
-            <h2 class="text-3xl font-bold worldcup-title mb-4">
-                Absen Face Recognition
-            </h2>
+            <h2 class="text-3xl font-bold text-white mb-4">Absen Face Recognition</h2>
 
             <!-- Camera -->
-            <div class="camera-card rounded-2xl overflow-hidden mb-6 relative">
+            <div class="bg-zinc-200 rounded-2xl overflow-hidden shadow-2xl mb-6 relative">
                 <video id="video" autoplay playsinline class="w-full h-auto" style="transform: scaleX(-1);"></video>
                 <canvas id="canvas" class="hidden"></canvas>
 
@@ -257,12 +53,12 @@
     </div>
 
     <!-- RIGHT SIDE LIST -->
-    <div class="w-1/2 attendance-panel p-8 right-panel">
+    <div class="w-1/2 bg-white p-8">
         <div class="flex justify-between items-center mb-6">
             <h2 class="text-3xl font-bold text-gray-900">DAFTAR ABSENSI</h2>
             <div class="text-right">
                 <div class="text-sm text-gray-500">{{ now()->format('d F Y') }}</div>
-                <div id="clock" class="text-4xl clock-style"></div>
+                <div id="clock" class="text-4xl font-bold text-gray-900"></div>
             </div>
         </div>
 
@@ -287,7 +83,7 @@
         <div class="bg-white rounded-xl shadow-lg overflow-hidden">
             <div class="overflow-x-auto" style="max-height: calc(100vh - 250px);">
                 <table class="min-w-full">
-                    <thead class="table-header sticky top-0">
+                    <thead class="bg-blue-100 sticky top-0">
                         <tr>
                             <th class="px-4 py-3 text-xs font-bold">No.</th>
                             <th class="px-4 py-3 text-xs font-bold">NIK</th>
