@@ -31,12 +31,12 @@
             <div class="space-y-4 mb-6">
                 <div>
                     <label class="block text-black text-sm mb-2">NIK</label>
-                    <input id="nik" readonly class="w-full px-2 bg-zinc-200 rounded-lg" style="font-size: 30pt" />
+                    <input id="nik" disabled class="w-full px-2 bg-zinc-200 rounded-lg" style="font-size: 30pt" />
                 </div>
 
                 <div>
                     <label class="block text-black text-sm mb-2">Nama</label>
-                    <input id="nama" readonly class="w-full px-4 py-3 bg-zinc-200 rounded-lg" />
+                    <input id="nama" disabled class="w-full px-4 py-3 bg-zinc-200 rounded-lg" />
                 </div>
             </div>
 
@@ -147,7 +147,7 @@
 
 <!-- SUBMIT MODAL -->
 <div id="submitModal" class="hidden fixed inset-0 bg-black/60 flex items-center justify-center z-50">
-    <div class="bg-white w-full max-w-md rounded-2xl p-8 shadow-xl relative">
+    <div class="bg-white w-full max-w-2xl rounded-2xl p-8 shadow-xl relative">
 
         <!-- Tombol Exit -->
         <button type="button" onclick="closeSubmitModal()"
@@ -166,7 +166,7 @@
 
             <button type="button"
                 onclick="changeQty(-1)"
-                class="w-12 h-12 rounded-lg bg-gray-200 hover:bg-gray-300 text-2xl font-bold transition">
+                class="w-20 h-20 rounded-xl bg-gray-200 hover:bg-gray-300 text-5xl font-bold transition active:scale-95 flex items-center justify-center">
                 −
             </button>
 
@@ -175,12 +175,12 @@
                 value="1"
                 min="1"
                 max="10"
-                readonly
-                class="w-24 text-center px-3 py-3 border rounded-lg font-semibold text-lg">
+                disabled
+                class="w-32 h-20 text-center border rounded-xl font-bold text-4xl">
 
             <button type="button"
                 onclick="changeQty(1)"
-                class="w-12 h-12 rounded-lg bg-gray-200 hover:bg-gray-300 text-2xl font-bold transition">
+                class="w-20 h-20 rounded-xl bg-gray-200 hover:bg-gray-300 text-5xl font-bold transition active:scale-95 flex items-center justify-center">
                 +
             </button>
 
@@ -191,7 +191,7 @@
             Tipe Ambil Makanan
         </label>
 
-        <div class="grid grid-cols-2 gap-3 mb-6">
+        <div class="grid grid-cols-3 gap-3 mb-6">
             <button type="button"
                 id="btnDineIn"
                 onclick="setOrderType('Dine In')"
@@ -204,6 +204,13 @@
                 onclick="setOrderType('Take Away')"
                 class="order-type-btn bg-white text-gray-700 border border-gray-300 hover:bg-gray-100 py-3 rounded-lg font-bold transition">
                 Bungkus
+            </button>
+
+            <button type="button"
+                id="btnMenuSehat"
+                onclick="setOrderType('Menu Sehat')"
+                class="order-type-btn bg-white text-gray-700 border border-gray-300 hover:bg-gray-100 py-3 rounded-lg font-bold transition">
+                Menu Sehat
             </button>
         </div>
 
@@ -328,21 +335,28 @@ function setOrderType(type) {
     const orderTypeInput = document.getElementById("orderType");
     const btnDineIn = document.getElementById("btnDineIn");
     const btnTakeAway = document.getElementById("btnTakeAway");
+    const btnMenuSehat = document.getElementById("btnMenuSehat");
 
     orderTypeInput.value = type;
 
-    if (type === "DINE_IN") {
-        btnDineIn.className =
-            "order-type-btn bg-green-600 text-white border border-green-600 py-3 rounded-lg font-bold transition";
+    // Reset semua tombol ke default
+    const defaultClass =
+        "order-type-btn bg-white text-gray-700 border border-gray-300 hover:bg-gray-100 py-3 rounded-lg font-bold transition";
 
-        btnTakeAway.className =
-            "order-type-btn bg-white text-gray-700 border border-gray-300 hover:bg-gray-100 py-3 rounded-lg font-bold transition";
-    } else {
-        btnTakeAway.className =
-            "order-type-btn bg-green-600 text-white border border-green-600 py-3 rounded-lg font-bold transition";
+    btnDineIn.className = defaultClass;
+    btnTakeAway.className = defaultClass;
+    btnMenuSehat.className = defaultClass;
 
-        btnDineIn.className =
-            "order-type-btn bg-white text-gray-700 border border-gray-300 hover:bg-gray-100 py-3 rounded-lg font-bold transition";
+    // Class tombol aktif
+    const activeClass =
+        "order-type-btn bg-green-600 text-white border border-green-600 py-3 rounded-lg font-bold transition";
+
+    if (type === "Dine In") {
+        btnDineIn.className = activeClass;
+    } else if (type === "Take Away") {
+        btnTakeAway.className = activeClass;
+    } else if (type === "Menu Sehat") {
+        btnMenuSehat.className = activeClass;
     }
 }
 

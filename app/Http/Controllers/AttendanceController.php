@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\MealTimeSetting;
 use App\Models\AttendanceLog;
 use App\Models\Employee;
+use App\Models\HealthyMenu;
 use App\Services\FaceRecognitionService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -100,6 +101,7 @@ class AttendanceController extends Controller
             // Ambil nama karyawan dari database Laravel
             $employee = Employee::where('nik', $nik)->first();
             $employeeName = $employee ? $employee->name : null;
+            $isHealthyMenu = HealthyMenu::where('nik', $nik)->exists();
 
             // MODE RECOGNIZE ONLY: hanya kembalikan data tanpa simpan absensi
             if ($recognizeOnly) {
@@ -119,18 +121,62 @@ class AttendanceController extends Controller
             // MODE CHECK-IN: simpan ke database
 
             // Cek sudah absen atau belum hari ini untuk meal type ini
-            $existingAttendance = AttendanceLog::where('nik', $nik)
-                ->where('meal_type', $currentMealType)
-                ->whereDate('attendance_date', today())
-                ->first();
+            // $existingAttendance = AttendanceLog::where('nik', $nik)
+            //     ->where('meal_type', $currentMealType)
+            //     ->whereDate('attendance_date', today())
+            //     ->first();
+
+            // if ($existingAttendance) {
+            //     return response()->json([
+            //         'success'       => false,
+            //         'message'       => "Anda sudah absen {$currentMealType} hari ini.",
+            //         'nik'           => $nik,
+            //         'employee_name' => $employeeName,
+            //     ]);
+            // }
+
+            $orderType = $request->order_type;
+
+            if ($orderType === 'Menu Sehat') {
+
+                if (!$isHealthyMenu) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Maaf, Anda tidak terdaftar sebagai penerima Menu Sehat.',
+                        'nik' => $nik,
+                        'employee_name' => $employeeName,
+                    ], 403);
+                }
+
+            }
+
+            if ($orderType == 'Menu Sehat') {
+
+                $existingAttendance = AttendanceLog::where('nik', $nik)
+                    ->where('meal_type', $currentMealType)
+                    ->whereDate('attendance_date', today())
+                    ->where('order_type', 'Menu Sehat')
+                    ->first();
+
+            } else {
+
+                $existingAttendance = AttendanceLog::where('nik', $nik)
+                    ->where('meal_type', $currentMealType)
+                    ->whereDate('attendance_date', today())
+                    ->where('order_type', '!=', 'Menu Sehat')
+                    ->first();
+
+            }
 
             if ($existingAttendance) {
+
                 return response()->json([
                     'success'       => false,
                     'message'       => "Anda sudah absen {$currentMealType} hari ini.",
                     'nik'           => $nik,
                     'employee_name' => $employeeName,
                 ]);
+
             }
 
             // Simpan absensi baru
