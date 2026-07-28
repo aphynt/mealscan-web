@@ -11,3 +11,4 @@ Artisan::command('inspire', function () {
 
 
 Schedule::command('app:post-meal-time');
+Schedule::command('app:sync-healthy-menu');
