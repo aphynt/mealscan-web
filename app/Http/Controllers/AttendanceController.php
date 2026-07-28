@@ -137,18 +137,18 @@ class AttendanceController extends Controller
 
             $orderType = $request->order_type;
 
-            if ($orderType === 'Menu Sehat') {
+            // if ($orderType === 'Menu Sehat') {
 
-                if (!$isHealthyMenu) {
-                    return response()->json([
-                        'success' => false,
-                        'message' => 'Maaf, Anda tidak terdaftar sebagai penerima Menu Sehat.',
-                        'nik' => $nik,
-                        'employee_name' => $employeeName,
-                    ], 403);
-                }
+            //     if (!$isHealthyMenu) {
+            //         return response()->json([
+            //             'success' => false,
+            //             'message' => 'Maaf, Anda tidak terdaftar sebagai penerima Menu Sehat.',
+            //             'nik' => $nik,
+            //             'employee_name' => $employeeName,
+            //         ], 403);
+            //     }
 
-            }
+            // }
 
             if ($orderType == 'Menu Sehat') {
 
